@@ -1,0 +1,180 @@
+<html>
+	<head>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+	
+		<script>
+		
+		
+		
+			var signalstrength = ["10", "20", "18", "28", "25", "90"];  
+			
+			var channel = ["1", "10", "14", "110", "32", "7"];
+			
+			var ssid = ["A","B","C","D","E","F"];
+			
+			
+			var dataset = [];
+			var datapush = [];
+			var label = [];
+			var temp=0;
+			var swap ="";
+			var count1=0;
+			var count2=0;
+			
+			var i=0;
+			var j=0;
+			var k=0;
+			
+			
+			for(i=0;i<(signalstrength.length-1);i++)
+			{
+				for(j=0;j<(signalstrength.length-i-1);j++)
+				{
+					if((parseInt(channel[j])) > (parseInt(channel[j+1])))
+					{
+						swap = signalstrength[j];
+						signalstrength[j] = signalstrength[j+1];
+						signalstrength[j+1] = swap;
+						
+						swap = channel[j];
+						channel[j] = channel[j+1];
+						channel[j+1] = swap;
+						
+						swap = ssid[j];
+						ssid[j] = ssid[j+1];
+						ssid[j+1] = swap;
+						
+						
+					}
+					
+				}
+			}
+			
+			for (i = 0; i < signalstrength.length; i++) {
+				
+				if(channel[i] <= 14)
+				{
+					label.push("","");
+					//label.push("",(parseInt(channel[i])));
+					count1++;
+				}
+					
+			}
+			
+			label[count1] = '2.4 GHz' ;
+			label.push("","","","","");
+			
+			
+			
+			
+			
+			for (i = 0; i < signalstrength.length; i++) {
+				if((channel[i] > 14) && (channel[i] <= 168))
+				{
+					label.push("","");
+					//label.push("",(parseInt(channel[i])));
+					count2++;
+				}
+				
+			}
+			label.push("");
+			
+			label[(2*count1)+count2+5] = '5 GHz' ;
+			
+			
+			
+			for (i = 0; i < signalstrength.length; i++) {
+					if(channel[i] <= 14)
+					{
+						var ss = ssid[i];
+					
+						dataset.push({
+							data: datapush,
+								label: ss,
+								borderColor: "#3e95cd",
+								backgroundColor:"#3e95cd",
+								borderWidth:"01",
+								pointRadius:"0",
+								fill: false
+							
+							});
+							
+						datapush.push(0,signalstrength[i]);
+					}
+				
+				
+			}
+			
+			datapush.push(0,0,0,0,0);
+			
+			//bandwidth = '5';
+			
+			
+			
+			for (i=0; i < (signalstrength.length); i++) {
+			
+				if(channel[i] > 14)
+				{
+					var ss = ssid[i];
+				
+					dataset.push({
+						data: datapush,
+							label: ss,
+							borderColor: "#FF0000",
+							backgroundColor:"black",
+							borderWidth:"01",
+							pointRadius:"0",
+							fill: false
+						
+						});
+						
+					datapush.push(0,signalstrength[i]);
+				}
+				
+			}
+			datapush.push(0,0);
+			
+				
+			function makeVisible()
+			{
+				document.getElementById("line-chart").style.visibility = "visible";
+				Chart.defaults.global.layout ="";
+				Chart.defaults.global.legend.display =false;
+				Chart.defaults.global.elements.line.tension=0.2,
+
+				new Chart(document.getElementById("line-chart"), {
+					
+				  type: 'line',
+				 
+				  data: {
+					labels: label,
+					datasets : dataset
+					
+					
+				  },
+				  options: {
+					
+					title: {
+					  display: true,
+						
+					  text: 'Signal Strength'
+					}
+				  }
+				});
+
+				}
+				
+
+				
+		</script>
+	</head>	
+
+	<body>
+	
+		<button type="button" onclick="makeVisible()">Click Me</button>
+		<canvas id="line-chart" width="500" height="100" style="visibility:hidden;"></canvas>
+		
+	</body>
+	
+</html>
